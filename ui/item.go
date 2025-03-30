@@ -1,3 +1,35 @@
+// TASK DESCRIPTION
+// ================
+// 🧠 Welcome to Task 2, Pokémon Trainer!
+//
+// You're building a Pokédex UI using the Charm Bubbles list component,
+// and you need to make sure each Pokémon in your list knows how to 
+// introduce itself properly.
+//
+// Right now, you have a `PokemonItem` type that wraps basic Pokémon info 
+// (like name and URL). Your goal is to make this type implement the 
+// `list.DefaultItem` interface from the Bubbles library.
+//
+// Here's what you need to do:
+// 
+// 1. Implement the following methods on `*PokemonItem`:
+//    - `Title() string`         → This should return the Pokémon's name, nicely capitalized
+//    - `Description() string`   → You can return something like "A wild Pokémon appears!"
+//    - `FilterValue() string`   → Return a lowercase version of the name for fuzzy searching
+//
+// 2. When your code compiles, the line:
+//
+//       var _ list.DefaultItem = (*PokemonItem)(nil)
+//
+//    will confirm your implementation is correct (no red squiggles! ✅).
+//
+// 💡 Hints:
+// - You can embed `pokeapi.PokemonRef` inside your `PokemonItem` struct for easy field access.
+// - If you're curious, check out `golang.org/x/text/cases` to make the title prettier.
+// - Keep it simple and readable. You're building for clarity, not cleverness!
+//
+// Ready? Time to code! 🧑‍💻🐱‍🏍🔥
+
 package ui
 
 import (
@@ -5,22 +37,18 @@ import (
 	"github.com/iptch/go-techbier-2024/pokeapi"
 )
 
-// a pokemon list item is a pokemon
+// PokemonItem wraps a basic Pokémon reference (name + URL) for use in the list UI.
+// Your goal: make this type implement the list.DefaultItem interface.
 type PokemonItem pokeapi.PokemonRef
 
-// ### Task 2 ###
-// This will fail as long as you do not implement the correct interface
-//
-// check if type implements interface
+// ✅ This line ensures the compiler checks that PokemonItem implements list.DefaultItem.
+// It will fail to compile until you've implemented all required methods.
 var _ list.DefaultItem = (*PokemonItem)(nil)
 
-// ### Task 2 ###
-// Make sure that PokemonItem implements the list.DefaultItem interface
-// Check out the documentation for the the interface on pkg.go.dev
-//
-// If you are stuck, read up on embedding, e.g. here:
-// https://go.dev/doc/effective_go#embedding
-//
-// Think about how you could make the Pokemon list item look good in the list.
-// Maybe you want to make sure that the displayed item title is correctly capitalized?
-// Hint: check out the golang.org/x/text/cases package
+// 🧠 Tips:
+// - You can embed fields using Go's struct embedding (see: https://go.dev/doc/effective_go#embedding)
+// - Capitalize the Pokémon name in Title() for better readability
+//   ➜ Check out: golang.org/x/text/cases
+
+//TODO:Add implementations
+
