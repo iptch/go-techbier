@@ -1,3 +1,48 @@
+// PROJECT DESCRIPTION
+// ===================
+// Welcome, brave developer-trainer! 🧑‍💻⚡🐉
+//
+// You're working on the backend of a Pokédex app powered by the PokeAPI.
+// Your goal is to fetch Pokémon data, explore their abilities, and even generate
+// beautiful ASCII sprite art to display in the UI.
+//
+// The `pokeapi` package provides a simple and extendable client for accessing the PokeAPI,
+// fetching Pokémon references, detailed stats, types, and sprite images.
+//
+// So far, you’ve got types like:
+//
+// - `PokemonRef`   → A basic reference to a Pokémon (name + URL)
+// - `Pokemon`      → Full details about a Pokémon (types, stats, and sprites)
+// - `PokemonTypeRef` and `PokemonStatRef` → Subobjects within a Pokémon
+//
+// You’ve also got functions that:
+//
+// ✅ Fetch a list of Pokémon using pagination (`GetAllPokemon(n int)`)
+// ✅ Fetch full details of a Pokémon via `.Get()` on a `PokemonRef`
+//
+// --------------------------------------------------------------------
+// 🧠 TASK 3: Working with Sprites & ASCII Art
+// --------------------------------------------------------------------
+//
+// Your mission now is to extract the Pokémon's official artwork URL
+// from the `Sprites` map and convert that image into ASCII art!
+//
+// Specifically:
+//
+// 1. In `GetSpriteUrl()`:
+//    - Traverse the `Sprites` map to find the URL under:
+//      sprites → other → official-artwork → front_default
+//    - Use type assertions to navigate safely through each layer
+//    - If anything is missing or of the wrong type, return an error
+//
+// 2. In `GetAsciiSprite(width int)`:
+//    - Use the `ascii-image-converter` package (github.com/TheZoraiz/ascii-image-converter/aic_package)
+//    - Fetch the sprite URL using your `GetSpriteUrl()` function
+//    - Use the `DefaultFlags()` and `Convert()` methods from the package
+//    - Generate and return colored ASCII art for display in your Pokédex
+//
+// --------------------------------------------------------------------
+
 package pokeapi
 
 import (
@@ -112,23 +157,26 @@ func (p *Pokemon) GetSpriteUrl() (string, error) {
 			return "", fmt.Errorf("key not found: %s", key)
 		}
 
-		// ### Task 3 ###
-		// To understand what we are doing here, you might want to check out the response
-		// from pokeapi when making a request for a Pokémon: https://pokeapi.co/
-		//
-		// There are different sprites for every Pokémon, but we want to get the default front.
-		// The keys above help us in traversing the response structure to find the right sprite.
-		// Basically, the URL we are looking for is nested in:
-		// sprites > other > official-artwork > front_default
-		// In our traversal of this structure, we need to check that the response actually included
-		// what we expect it to, since any of the above parts might be missing.
-		//
-		// Implement some type assertions for the following:
-		//   1. Check if we have reached the end of the keys slice yet
-		//   2. If not, check whether the current value is of type map[string]any and update spritesMap
-		//  	  with the value for the next iteration, return an error if anything goes wrong
-		//   3. If yes, assert that the value is of type string and set our spritesUrl accordingly,
-		//      return an error if anything goes wrong
+	// --- Task 3 -------------------------------------------------------------
+	// Your mission is to extract the front sprite URL from the nested sprite data.
+	//
+	// The desired path in the JSON response looks like this:
+	//     sprites → other → official-artwork → front_default
+	//
+	// To achieve this:
+	//   1. Iterate over the `keys` slice above
+	//   2. For each key:
+	//      a. Check if the current `spritesMap` contains that key
+	//      b. If not, return an error (the data is incomplete)
+	//      c. If it exists:
+	//         - If we're at an intermediate key, assert it's a `map[string]interface{}`
+	//           and continue traversal deeper (update spritesMap)
+	//         - If it's the last key (`front_default`), assert it's a `string` and assign
+	//           it to `spritesUrl`
+	//         - If anything fails along the way (type mismatch, missing key), return an error
+	//
+	// Pro Tip: Look at actual JSON responses on https://pokeapi.co to get a feel for the structure
+	// -------------------------------------------------------------------------
 
 	}
 
@@ -141,8 +189,7 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 		return "", err
 	}
 
-	// ### Task 3 ###
-	//
+	// --- Task 3 -------------------------------------------------------------
 	// We need to convert the Pokemon sprites into ASCII art. We will use the
 	// package github.com/TheZoraiz/ascii-image-converter/aic_package.
 	//
