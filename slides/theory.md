@@ -788,21 +788,41 @@ func main() {
 
 <!-- end_slide -->
 
-Type Assertions
+The Any Type
 ---
+If we don't know yet what a certain variable type will be, or we don't care, we can use two different ways to declare a variable of any type.
 
-```go
+```go +line_numbers {5|10}
 package main
 
-import (
-    "fmt"
-)
+import "fmt"
+
+func dealsWithAnything(literallyAnything any) {
+    fmt.Println("I don't care what you pass to me!")
+}
+
+func main() {
+    var canBeAnything interface{}
+}
+```
+<!-- end_slide -->
+
+Type Assertions
+---
+We have seen that Go can infer types when we define variables using the `:=` notation.
+Sometimes, we want to ensure that we are dealing with a specific type, and if need be, we want to cast whatever input we get to that type.  
+This can be solved using *type assertions* in Go.
+
+```go +line_numbers +exec {10|14|all}
+package main
+
+import "fmt"
 
 func main() {
     var canBeAnything interface{}
     canBeAnything = "a string"
 
-    // Type **assertion**. we are telling Go "this is definitely a string, convert to one"
+    // Type assertion: we are telling Go "this is definitely a string, convert to one"
     ofTypeString := canBeAnything.(string)
     fmt.Println(ofTypeString)
 
@@ -842,10 +862,35 @@ We will continue in about _20 minutes_.
 
 <!-- end_slide -->
 
-Channels and Goroutines
+Channels and Goroutines 1
 ---
+This is a rather advanced topic that covers concurrency and concurrent programming.
+Go is very capable in terms of concurrent programming through its concepts of `channels` and `goroutines`.
 
-```go
+- Channels allow data/message passing between concurrent threads of a Go programm 
+- Goroutines allow us to run certain functions or code blocks safely in a separate thread
+- Goroutines are spawned using the `go` keyword
+
+```go +line_numbers
+package main
+
+// Pass string data between threads through the channel messages
+func sendMessages(messages chan string) {
+    messages <- "ping"
+    messages <- "pong"
+    close(messages)
+}
+
+func main() {
+    // ...
+}
+```
+
+<!-- end_slide -->
+
+Channels and Goroutines 2
+---
+```go +line_numbers {14-20}
 package main
 
 import "fmt"
