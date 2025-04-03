@@ -1,15 +1,13 @@
 ---
+title: Welcome to Go!
+sub_title: The foundation of cloud computing.
 author: Zak Cook & Selim Kälin
+theme:
+  name: dark
 ---
 
-# Welcome to Go!
-
-Welcome to the Go Techbier!
-
----
-
-# Agenda
-
+Agenda
+===
 - Go Basics
 - Standard Types and Syntax
 - Structs
@@ -17,7 +15,9 @@ Welcome to the Go Techbier!
 - Error Handling
 - Dealing with JSON
 
-**You are up!**
+<!-- newline -->
+- ***You are up! Task 1***
+<!-- newline -->
 
 - Loops and Slices
 - Packages, Exports, Constants
@@ -25,23 +25,29 @@ Welcome to the Go Techbier!
 - Methods
 - Interfaces
 
-**You are up!**
+<!-- newline -->
+- ***You are up! Task 2***
+<!-- newline -->
 
 - Imports
 - Go Management Tools
 
-**You are up!**
+<!-- newline -->
+- ***You are up! Task 3***
 
+<!-- end_slide -->
+
+Get Your Fingers Dirty
 ---
-
-## Get Your Fingers Dirty
 
 - You get the chance to get your fingers dirty with your first Go project
 - After each theory block, we will give you time to mess around in some Go code
 - It makes sense if more experienced Gophers sit with less experienced ones
+
   - Collaboration is very welcome!
 
 - Instructions to get the code skeleton:
+<!-- newline -->
 
 ```bash
 # Install Go: https://go.dev/doc/install
@@ -58,9 +64,10 @@ go version
 git clone https://github.com/iptch/go-techbier-2024.git
 ```
 
----
+<!-- end_slide -->
 
-## Go Basics
+Go Basics
+---
 
 About Go ...
 
@@ -73,9 +80,10 @@ About Go ...
 - great and supportive tooling, e.g. `go test`
 - backbone of cloud technology like Kubernetes
 
----
+<!-- end_slide -->
 
-## Standard Types and Syntax
+Standard Types and Syntax
+---
 
 - the full language specification can be found at https://go.dev/ref/spec
 - types include:
@@ -88,44 +96,76 @@ About Go ...
   - pointer
   - channel
 
+<!-- end_slide -->
+
+Declaration and Definition Syntax Basics 1
 ---
 
-## Declaration and Definition Syntax Basics
+```go +line_numbers
+package main        // Everything belongs to a package
 
-```go
+func main() {       // Braces are used to delimit scopes, e.g. function declarations
+    var x int       // Comments start with two slashes
+}
+```
+<!-- end_slide -->
+
+Declaration and Definition Syntax Basics 2
+---
+```go +line_numbers +exec
+package main
+
+import "fmt"        // Other packages can be imported
+ 
+func main() {
+    var x int
+    fmt.Println(x)  // Uninitialized variables take default value
+}
+```
+<!-- end_slide -->
+
+Declaration and Definition Syntax Basics 3
+---
+```go +line_numbers +exec
 package main
 
 import "fmt"
 
 func main() {
-    var x int  // Comments start with two slashes, like so
-    var myBoolean bool = true  // Variable declaration follows snakeCase syntax
-    var (  // Declaration blocks are delimited by parantheses
+    var x int  
+    var myBoolean bool = true   // Variable declaration follows snakeCase syntax
+    var (                       // Declaration blocks are delimited by parantheses
         unsignedInteger uint8
         someFloat       float64
         myFirstString   string
     )
-    // Variables take default value when uninitialized
-    fmt.Println(x, myBoolean, unsignedInteger, someFloat, myFirstString)
-
-    x = 5  // Variable assignment, x has to be declared previously
-
-    var (
-        isTrue  bool = true
-        isFalse bool = false
-    )
-    fmt.Println(isTrue, isFalse)
-
-    hello := "World"  // Short syntax for declaration and assignment, type is inferred
-    fmt.Println(hello)
+    fmt.Printf("%d, %v, %d, %f, %q", x, myBoolean, unsignedInteger, someFloat, myFirstString)
 }
 ```
 
+<!-- end_slide -->
+
+Declaration and Definition Syntax Basics 4
+---
+```go +line_numbers +exec
+package main
+
+import "fmt"
+
+func main() {
+    var x int = 5             // Variable assignment, x has to be declared previously
+    y := 7.7                  // Or use the shorthand := to infer the type, e.g. float
+    fmt.Printf("%d\n%f\n", x, y)
+    fmt.Printf("y is of type %T", y)
+}
+```
+
+<!-- end_slide -->
+
+Pop Quiz
 ---
 
-## Pop Quiz
-
-```go
+```go +line_numbers +exec
 package main
 
 import "fmt"
@@ -135,21 +175,19 @@ func main() {
     {
         x := "can guess"
         x = "this variable?"
-        fmt.Println(x)
+        fmt.Printf("A: %s\n", x)
     }
-    fmt.Println(x)
+    fmt.Printf("B: %s\n", x)
 }
 
 ```
 
+<!-- end_slide -->
+
+Structs and Visibility 1
 ---
-
-## Structs and Visibility
-
-```go
+```go +line_numbers
 package main
-
-import "fmt"
 
 // Define a new type
 type Consultant struct {
@@ -159,74 +197,177 @@ type Consultant struct {
     ahvNumber string // Unexported (private) field due to lowercase
 }
 
+func main() {}
+```
+
+<!-- end_slide -->
+
+Structs and Visibility 2
+---
+```go +line_numbers +exec
+package main
+
+import "fmt"
+
+type Consultant struct {
+    Name      string
+    Age       int
+    Project   string
+    ahvNumber string
+}
+
 func main() {
     // Initialize fields with order
     host1 := Consultant{"Zak Cook", 27, "BIT CBCD", "756.0001.0002.03"}
     fmt.Println(host1)
+}
+```
+
+<!-- end_slide -->
+
+Structs and Visibility 3
+---
+```go +line_numbers +exec {15-22|20}
+package main
+
+import "fmt"
+
+type Consultant struct {
+    Name      string
+    Age       int
+    Project   string
+    ahvNumber string
+}
+
+func main() {
+    host1 := Consultant{"Zak Cook", 27, "BIT CBCD", "756.0001.0002.03"}
 
     // Initialize fields by name
     host2 := Consultant{
         Name: "Selim Kaelin",
-        // Forgot how old selim was
+        // Forgot how old Selim is 
         Project:   host1.Project,      // Access fields with dot syntax
         ahvNumber: "756.0001.0002.04", // This would not work from another package
     }
     fmt.Println(host2)
-
-    var host3 Consultant // No initialization
-    host3.Name = "Jakob"
-    fmt.Println(host3)
-
-    // host1.ahvNumber from another package would not work!
 }
-
 ```
 
+<!-- end_slide -->
+
+Structs and Visibility 4
 ---
+```go +line_numbers +exec
+package main
 
-## Functions and Pointers
+import "fmt"
 
+type Consultant struct {
+    Name      string
+    Age       int
+    Project   string
+    ahvNumber string
+}
+
+func main() {
+///     // This is hidden code to allow execution but not clutter the slide
+///     host1 := Consultant{"Zak Cook", 27, "BIT CBCD", "756.0001.0002.03"}
+///     host2 := Consultant{
+///        Name: "Selim Kaelin",
+///        // Forgot how old Selim is 
+///        Project:   host1.Project,      // Access fields with dot syntax
+///        ahvNumber: "756.0001.0002.04", // This would not work from another package
+///    }
+    var host3 Consultant
+    host3.Name = "Vincent"
+    host3.Project = host2.Project
+    host3.ahvNumber = "756.0001.0002.05"  // When would this fail?
+
+    fmt.Println(host3)
+
+}
+```
+
+<!-- end_slide -->
+
+Functions and Pointers 1
+---
 
 To distinguish between functions and methods in Go, we have to look at the
 context in which they are defined:
 
 - Functions: standalone procedure, not associated with any object, i.e. a struct
 
-Pointers are defined using the `*` notation and referenced using `&`.
-
-```go
+```go +line_numbers +exec 
 package main
 
 import "fmt"
 
+// Definition follows pattern:
+// func nameOfFunction(argumentsWithTypes) returnType { ... }
 func incrementByValue(x int) int {
     return x + 1
 }
 
+func main() {
+    a := 5
+    fmt.Printf("Before: %d\n", a)
+    fmt.Printf("After: %d", incrementByValue(a))
+}
+```
+
+<!-- end_slide -->
+
+Functions and Pointers 2
+---
+
+Pointers are defined using the `*` notation and referenced using `&`.
+
+```go +line_numbers +exec {5-8|13}
+package main
+
+import "fmt"
+
 // Void return type
-func incrementByReference(x *int) {
-    *x = *x + 1
+func incrementByReference(x *int) {   // Function argument is a pointer to an integer
+    *x = *x + 1                       // Dereferencing the pointer to access its value
 }
 
 func main() {
     a := 5
-    incrementByReference(&a)
-    fmt.Println(a)
-    fmt.Println(incrementByValue(a))
+    fmt.Printf("Before: %d\n", a)
+    incrementByReference(&a)          // Passing by reference
+    fmt.Printf("After: %d", a)
 }
 ```
 
+<!-- end_slide -->
+
+Error Handling With if Statements
 ---
 
-## Error Handling With if Statements
-
-```go
+```go +line_numbers +exec {9-10|13-15|18|all}
 package main
 
 import (
     "fmt"
     "os"
 )
+
+func createFile(filePath string) (int, error) {
+    // os.Create() could return an error
+    f, err := os.Create(filePath)
+
+    // We handle the potential error like so
+    if err != nil {
+        return 0, err
+    }
+
+    // This is only executed after the function returns
+    defer f.Close()
+
+    return fmt.Fprintln(f, "what up")
+}
 
 func main() {
     bytesWritten, err := createFile("/tmp/defer.txt")
@@ -236,25 +377,28 @@ func main() {
     }
     fmt.Printf("wrote %d bytes.\n", bytesWritten)
 }
+```
 
-func createFile(p string) (int, error) {
-    f, err := os.Create(p)
-    // This is how error handling is done in go
-    if err != nil {
-        return 0, err
-    }
-    // This is only executed after the function returns
-    defer f.Close()
+<!-- end_slide -->
 
-    return fmt.Fprintln(f, "what up")
+All Together Now: Parsing JSON 1
+---
+
+Parsing to and from JSON is essential when using web APIs. 
+Luckily, the `encoding/json` package in Go provides very user-friendly functionality to do just that.
+
+Given a JSON schema
+```json
+{
+    "full_name": "Peter Parker",
+    "age": 22,
+    "project": "Spinning nets in NYC"
 }
 ```
 
----
+We handle parsing in Go accordingly
 
-## All Together Now: Parsing JSON
-
-```go
+```go +line_numbers {9-13}
 package main
 
 import (
@@ -268,15 +412,38 @@ type Consultant struct {
     Age      int    `json:"age"`
     Project  string `json:"project"`
 }
+```
 
+<!-- end_slide -->
+
+All Together Now: Parsing JSON 2
+---
+```go +line_numbers +exec
+/// package main
+/// 
+/// import (
+///     "encoding/json"
+///     "fmt"
+///     "os"
+/// )
+/// 
+/// type Consultant struct {
+///     FullName string `json:"full_name"`
+///     Age      int    `json:"age"`
+///     Project  string `json:"project"`
+/// }
+/// 
 func main() {
-    f, err := os.Open("slides/big_p.json")
+    f, err := os.Open("./big_p.json")
     if err != nil {
         panic(err)
     }
     defer f.Close()
 
+    // We will parse the JSON into a variable of type Consultant
     var consultant Consultant
+
+    // The not yet initialized variable is passed by reference
     err = json.NewDecoder(f).Decode(&consultant)
     if err != nil {
         panic(err)
@@ -286,9 +453,10 @@ func main() {
 }
 ```
 
----
+<!-- end_slide -->
 
-## Task 1
+Task 1
+===
 
 **Now you are up!**
 
@@ -298,120 +466,218 @@ Look around the project and check out the file `pokeapi/api.go`.
 
 You will find instructions in the code.
 
-We will continue in about _20 minutes_. The next slide contains some details
-about for loops and slices, which you need to task 1b.
+We will continue in about _20 minutes_. 
+The next slide contains some details about for loops and slices, which you will need to solve task 1b.
 
+<!-- end_slide -->
+
+For Loops and Slices 1
 ---
+Sticking to its philosophy of not overloading the language with too much functionality (looking at you C++, Python), Go supports `for` loops and `for` loops only.  
+Usually, a loop is used to iterate through a *slice*, which is Go's equivalent of arrays in other languages.
 
-## For Loops and Slices
 
-```go
+```go +line_numbers 
 package main
 
-import "fmt"
-
 func main() {
-    // Create a slice
-    var numbers = make([]int, 0)
+    var numbers = make([]int, 0)   // Create a slice of type integers and length 0
 
-    // For loop
+    // Use a for loop to fill the slice with values
     for i := 0; i < 3; i++ {
         numbers = append(numbers, i)
     }
+}
+```
 
+<!-- end_slide -->
+
+For Loops and Slices 2
+---
+```go +line_numbers 
+package main
+
+func main() {
+    var numbers = make([]int, 0)
+
+///    for i := 0; i < 3; i++ {
+///        numbers = append(numbers, i)
+///    }
+/// 
     // To imitate a while loop
     i := 3
     for i != 5 {
         numbers = append(numbers, i)
         i += 1
     }
+}
+```
+<!-- end_slide -->
 
-    // Add many elements
+For Loops and Slices 3
+---
+```go +line_numbers 
+package main
+
+func main() {
+    var numbers = make([]int, 0)
+
+///    for i := 0; i < 3; i++ {
+///        numbers = append(numbers, i)
+///    }
+/// 
+///    i := 3
+///    for i != 5 {
+///        numbers = append(numbers, i)
+///        i += 1
+///    }
+/// 
+    // Add many elements at once
     moreNumbers := []int{5, 6, 7}
     numbers = append(numbers, moreNumbers...)
+}
+```
+<!-- end_slide -->
 
-    // Range structure
+For Loops and Slices 4
+---
+```go +line_numbers +exec {10-13}
+package main
+
+import "fmt"
+
+func main() {
+    var numbers = make([]int, 0)
+
+    // ...
+
+///    for i := 0; i < 3; i++ {
+///        numbers = append(numbers, i)
+///    }
+/// 
+///    i := 3
+///    for i != 5 {
+///        numbers = append(numbers, i)
+///        i += 1
+///    }
+/// 
+///    moreNumbers := []int{5, 6, 7}
+///    numbers = append(numbers, moreNumbers...)
+/// 
+    // Finally, we print the slice using the range form
     for index, value := range numbers {
         fmt.Printf("Value at index %d: %d\n", index, value)
     }
 }
 ```
+<!-- end_slide -->
 
+Packages, Exports, and Constants Syntax Basics
 ---
+Let's compare some features in Go with another popular language, Java.
 
-## Packages, Exports, and Constants Syntax Basics
-
+<!-- column_layout: [1, 1] -->
+<!-- column: 0 -->
+Everything in go belongs to a package
 ```go
-// Everything in go belongs to a package
 package main
-// Java: package ch.ipt.ch;
-
-// Lowercase letter objects are NOT exported to other packages
-var numberInMainPackage = 42
-// Java: private static int numberInMainPackage = 42;
-
-// Uppercase names are exported
-var ExportedString = "Interpackagenal string"
-// Java: public static String publicString = "You get the point";
-
-// Constants are declared like so
-const Pi float64 = 3.1415926
-// Java: public static final float PI = 3.1415926
-
-func main() {
-    // empty
-}
 ```
 
----
+Lowercase letter objects are NOT exported to other packages
+```go
+var numberInMainPackage = 42
+```
 
-## Methods and Their Syntax
+Uppercase names are exported
+```go
+var ExportedString = "Interpackagenal string"
+```
+
+Constants are declared like so
+```go
+const Pi float64 = 3.1415926
+```
+
+<!-- column: 1 -->
+Similar in Java:
+```java
+package ch.ipt.ch;
+```
+<!-- newlines: 2 -->
+```java
+private static int numberInMainPackage = 42;
+```
+<!-- newlines: 2 -->
+```java
+public static String publicString = "Get it?";
+```
+<!-- newlines: 2 -->
+```java
+public static final float PI = 3.1415926
+```
+
+<!-- end_slide -->
+
+Methods and Their Syntax
+---
 
 To distinguish between functions and methods in Go, we have to look at the
 context in which they are defined:
 
-- Methods:
-  - like a function but contains a receiver, which specifies what type the
-    method belongs to
-  - receiver can be any type, but in most cases it is a struct or pointer to a
+Methods:
+- like a function but contains a *receiver*, which specifies what type the
+  method belongs to
+- receiver can be any type, but in most cases it is a struct or pointer to a
     struct
 
 ```go
-// Unexported method with a return value, c Consultant is the receiver object
-func (c Consultant) getAhvNumber() ahvNumber {
+// Unexported method with a return value of type string, c Consultant is the receiver object
+func (c Consultant) getProject() string {
     return c.ahvNumber
 }
 ```
 
----
+<!-- end_slide -->
 
-## Interfaces
+Interfaces
+---
 
 Interfaces specify a list of methods. A type set defined by an interface is the
 type set that implements all of those methods.
 
-> **IMPORTANT** In go, interfaces are implemented **implicitly**! There is no
+> **IMPORTANT** In Go, interfaces are implemented **implicitly**! There is no
 > explicit declaration of intent, such as the keyword `implements`.
 
 Syntax:
 
-```go
+```go +line_numbers
 // If it quacks like a duck it is a duck
 type Duck interface {
     Quack()
-}
-
-type Goose struct {}
-
-// Oops, I guess a goose is a duck
-func (g Goose) Quack() {
-    fmt.Println("Quack!")
+    Swim(distance int)
 }
 ```
 
----
+We can implement this interface by defining all its methods, i.e. `Quack()`, for a receiver of our choice.
+The method definition must be identical to the definition in the interface, i.e. same function arguments.  
+Consequently, it is easy to (accidentally) make a duck out of a goose:
 
-## Task 2
+```go +line_numbers
+type Goose struct {}
+
+func (g Goose) Quack() {
+    fmt.Println("Goose Quack!")
+}
+
+func (g Goose) Swim(distance int) {
+    fmt.Printf("I swam for %d meters!", distance)
+}
+```
+
+<!-- end_slide -->
+
+Task 2
+===
 
 **Now you are up!**
 
@@ -423,9 +689,10 @@ You will find instructions in the code.
 
 We will continue in about _20 minutes_.
 
----
+<!-- end_slide -->
 
-## Import Statements
+Import Statements
+---
 
 - As stated previously, everything in Go belongs to a package, declared by the
   keyword `package`
@@ -434,6 +701,8 @@ We will continue in about _20 minutes_.
   available
 - Package management is awesome! Look at the following example:
 
+<!-- column_layout: [2, 1] -->
+<!-- column: 0 -->
 ```go
 package main
 
@@ -445,38 +714,71 @@ import (
     "github.com/charmbracelet/bubbles/list" // External package we will need
 )
 ```
-
+<!-- column: 1 -->
+Compare that to Java
 ```java
-// Java
 import java.util.*;
 import java.util.ArrayList;
 ```
 
+<!-- end_slide -->
+
+Maps and "comma ok" Notation 1
 ---
 
-## Maps and "comma ok" Notation
+A `map` is Go's hash table equivalent. It is similar to a `dict` in Python.
 
-```go
+```go +line_numbers
 package main
 
-import (
-    "fmt"
-)
+func main() {
+    // Declare according to: map[KeyType]ValueType
+    myFirstMap := make(map[string]int)
+
+    myFirstMap["key1"] = 7
+    myFirstMap["key2"] = 13
+}
+```
+
+<!-- end_slide -->
+
+Maps and "comma ok" Notation 2
+---
+
+```go +line_numbers
+package main
 
 func main() {
-
-    m1 := make(map[string]int)
-
-    m1["k1"] = 7
-    m1["k2"] = 13
-
-    m2 := map[string]int{
-        "k1": 7,
+    // Instantiate a key-value pair right away
+    mySecondMap := map[string]int{
+        "key1": 7,
     }
+}
+```
 
-    for k2, v2 := range m2 {
-        // Can be written without the ok, will panic on failure
-        v1, ok := m1[k2]
+<!-- end_slide -->
+
+Maps and "comma ok" Notation 3
+---
+
+```go +line_numbers +exec
+package main
+
+import "fmt"
+
+func main() {
+///    myFirstMap := make(map[string]int)
+/// 
+///    myFirstMap["key1"] = 7
+///    myFirstMap["key2"] = 13
+/// 
+///    mySecondMap := map[string]int{
+///        "key1": 7,
+///    }
+/// 
+    for k2, v2 := range mySecondMap {
+        // Handle the possibily of k2 not existing in the map using the comma-ok method
+        v1, ok := myFirstMap[k2]
         if ok && v1 == v2 {
             fmt.Printf("%s is present and equal in both maps\n", k2)
         }
@@ -484,9 +786,10 @@ func main() {
 }
 ```
 
----
+<!-- end_slide -->
 
-## Type Assertions
+Type Assertions
+---
 
 ```go
 package main
@@ -511,18 +814,20 @@ func main() {
 }
 ```
 
----
+<!-- end_slide -->
 
-## Go Management Tools
+Go Management Tools
+---
 
 - Just like its package management, Go offers very capable management tools
   - `go fmt` for code formatting
   - `go mod`, `go get`, and `go install` for module and dependency management
   - `go test` for testing
 
----
+<!-- end_slide -->
 
-## Task 3
+Task 3
+===
 
 **Now you are up!**
 
@@ -535,9 +840,10 @@ check it out and run it with `go test ./...`.
 
 We will continue in about _20 minutes_.
 
----
+<!-- end_slide -->
 
-## Channels and Goroutines
+Channels and Goroutines
+---
 
 ```go
 package main
@@ -563,9 +869,10 @@ func main() {
 }
 ```
 
----
+<!-- end_slide -->
 
-## Bonus Tasks
+Bonus Tasks
+===
 
 Wow! You have come a long ways.
 
@@ -574,9 +881,10 @@ If you are still wanting to play around more, have a look at the branch
 
 You will want to start in `pokeapi/api.go`.
 
----
+<!-- end_slide -->
 
-## Useful Resources
+Useful Resources
+===
 
 - Go official documentation: https://go.dev/doc/
 - Effective Go (must-read): https://go.dev/doc/effective\_go
