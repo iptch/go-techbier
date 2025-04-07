@@ -11,7 +11,7 @@ Agenda
 - Go Basics
 - Standard Types and Syntax
 - Structs
-- Functions and Pointers
+- Functions
 - Error Handling
 - Dealing with JSON
 
@@ -21,7 +21,6 @@ Agenda
 
 - Loops and Slices
 - Packages, Exports, Constants
-- Arrays, Slices, Maps
 - Methods
 - Interfaces
 
@@ -30,6 +29,8 @@ Agenda
 <!-- newline -->
 
 - Imports
+- Maps and Comma OK Idiom
+- Type Assertion
 - Go Management Tools
 
 <!-- newline -->
@@ -129,11 +130,6 @@ func main() {
 }
 ```
 
-Output:
-```
-0
-```
-
 > 📃 Variables have default zero-values if not explicitly initialized.
 
 <!-- end_slide -->
@@ -157,10 +153,6 @@ func main() {
 }
 ```
 
-Output:
-```
-0, true, 0, 0.000000, ""
-```
 
 > 💡 Declaration blocks are a clean way to group related variables.
 
@@ -179,13 +171,6 @@ func main() {
     fmt.Printf("%d\n%f\n", x, y)
     fmt.Printf("y is of type %T", y)
 }
-```
-
-Output:
-```
-5
-7.700000
-y is of type float64
 ```
 
 > 📄 Use `:=` inside functions to declare and initialize in one line.
@@ -256,18 +241,13 @@ func main() {
 }
 ```
 
-Output:
-```
-{Pikachu Electric 25 #025}
-```
-
 > 🐭 We just created our first Pokémon entry! Struct values can be printed directly.
 
 <!-- end_slide -->
 
 Structs and Visibility 3
 ---
-```go +line_numbers +exec {14-22}
+```go +line_numbers +exec {15-22}
 package main
 
 import "fmt"
@@ -281,6 +261,7 @@ type Pokemon struct {
 
 func main() {
     pikachu := Pokemon{"Pikachu", "Electric", 25, "#025"}
+    fmt.Println(pikachu)
     bulbasaur := Pokemon{
         Name: "Bulbasaur",
         Type: "Grass",
@@ -290,12 +271,6 @@ func main() {
     fmt.Println(bulbasaur)
 }
 ```
-
-Output:
-```
-{Bulbasaur Grass 12 #001}
-```
-
 > 🧪 Named field initialization makes your code more readable and flexible.
 
 <!-- end_slide -->
@@ -325,16 +300,11 @@ func main() {
 }
 ```
 
-Output:
-```
-{Charmander Fire 18 #004}
-```
-
 > 🧯 You can also set struct fields one by one after declaration.
 
 <!-- end_slide -->
 
-Functions and Pointers 1
+Functions
 ---
 
 Let’s now look at how Go uses **functions**. A function in Go is a standalone unit of logic that can take input arguments and return values.
@@ -355,49 +325,9 @@ func main() {
 }
 ```
 
-Output:
-```
-Before: 5, After: 6
-```
-
-> 🧪 This passed a **copy** of `level`. To change the original, we need **pointers**.
+> 🧪 This passed a **copy** of `level`. To change the original, we need **pointers** (see backup).
 
 <!-- end_slide -->
-
-Functions and Pointers 2
----
-
-In Go, a pointer is a variable that stores the **memory address** of another variable. When we pass a pointer to a function, we can modify the original value.
-
-```go +line_numbers +exec {5-8|13}
-package main
-
-import "fmt"
-
-func boostLevel(level *int) { // *int means pointer to an int
-    *level = *level + 1       // *level dereferences the pointer to access the value
-}
-
-func main() {
-    lvl := 10
-    fmt.Printf("Before: %d\n", lvl)
-    boostLevel(&lvl)         // Pass the address of lvl
-    fmt.Printf("After: %d\n", lvl)
-}
-```
-
-Output:
-```
-Before: 10
-After: 11
-```
-
-> 🧠 Use `*` to access and change values via a pointer. Use `&` to get the address of a variable.
-
-> Bonus: If you want a function to modify struct fields directly, you’ll use a **pointer receiver** in a method. We’ll get to that soon!
-
-<!-- end_slide -->
-
 
 Error Handling: Caught an Error!
 ---
@@ -433,11 +363,6 @@ func main() {
 }
 ```
 
-Output:
-```
-You gained 22 XP!
-```
-
 > ⚠️ Always check your Pokéballs... err, errors!
 
 <!-- end_slide -->
@@ -445,7 +370,7 @@ You gained 22 XP!
 Parsing Wild Pokémon: JSON 1
 ---
 
-Oak’s assistant sends Pokémon data in **JSON** format. We’ll use Go’s powerful standard library to read it into a `struct`.
+Oak’s assistant sends Pokémon data in **JSON** format. Luckily, the encoding/json package in Go provides very user-friendly functionality to do just that.
 
 Wild Pokémon report:
 ```json
@@ -458,7 +383,7 @@ Wild Pokémon report:
 
 We’ll define a matching struct like this:
 
-```go +line_numbers {9-13}
+```go +line_numbers
 package main
 
 import (
@@ -480,21 +405,21 @@ type Pokemon struct {
 
 Parsing Wild Pokémon: JSON 2
 ---
-```go +line_numbers +exec
-/// package main
-/// 
-/// import (
-///     "encoding/json"
-///     "fmt"
-///     "os"
-/// )
-/// 
-/// type Pokemon struct {
-///     FullName string `json:"full_name"`
-///     Age      int    `json:"age"`
-///     Project  string `json:"project"`
-/// }
-/// 
+```go +line_numbers +exec {15-30}
+package main
+ 
+import (
+     "encoding/json"
+     "fmt"
+     "os"
+)
+ 
+type Pokemon struct {
+     FullName string `json:"full_name"`
+     Age      int    `json:"age"`
+     Project  string `json:"project"`
+}
+ 
 func main() {
     f, err := os.Open("./charmander_report.json")
     if err != nil {
@@ -546,8 +471,10 @@ For Loops and Slices 1
 In Go, the only looping keyword is `for` — and it's all you need!
 Just like scanning Pokémon one by one, we can loop through a list (slice) of entries.
 
-```go +line_numbers
+```go +line_numbers +exec {8-10}
 package main
+
+import "fmt"
 
 func main() {
     var pokedex = make([]string, 0)
@@ -555,6 +482,7 @@ func main() {
     for i := 1; i <= 3; i++ {
         pokedex = append(pokedex, fmt.Sprintf("Pokémon #%d", i))
     }
+    fmt.Printf("Our current Pokedex: %v\n", pokedex)
 }
 ```
 
@@ -567,8 +495,10 @@ For Loops and Slices 2
 
 You can mimic a `while` loop using `for` in Go — great for catching Pokémon until you run out of Pokéballs!
 
-```go +line_numbers
+```go +line_numbers +exec {8-12}
 package main
+
+import "fmt"
 
 func main() {
     var pokedex = make([]string, 0)
@@ -578,6 +508,7 @@ func main() {
         pokedex = append(pokedex, fmt.Sprintf("Caught #%d", 4 - pokeballs))
         pokeballs--
     }
+    fmt.Printf("Our current Pokedex: %v\n", pokedex)
 }
 ```
 
@@ -590,13 +521,16 @@ For Loops and Slices 3
 
 Want to add many Pokémon at once? Use `append(...slice...)`!
 
-```go +line_numbers
+```go +line_numbers +exec {6-8}
 package main
+
+import "fmt"
 
 func main() {
     pokedex := []string{"Pikachu", "Charmander"}
     more := []string{"Bulbasaur", "Squirtle"}
     pokedex = append(pokedex, more...)
+    fmt.Printf("Our current Pokedex: %v\n", pokedex)
 }
 ```
 
@@ -609,7 +543,7 @@ For Loops and Slices 4
 
 Loop over a slice using `range` — get both the index and the value!
 
-```go +line_numbers
+```go +line_numbers +exec {7-10}
 package main
 
 import "fmt"
@@ -621,13 +555,6 @@ func main() {
         fmt.Printf("%d: %s\n", index, name)
     }
 }
-```
-
-Output:
-```
-0: Pikachu
-1: Charmander
-2: Bulbasaur
 ```
 
 > 📖 Use `range` to loop over your slice like flipping through Pokédex pages.
@@ -660,7 +587,12 @@ const MaxLevel = 100
 Methods and Receivers
 ---
 
-You can attach behavior to structs using **methods**. The receiver can be a value or a pointer.
+To distinguish between functions and methods in Go, we have to look at the context in which they are defined:
+
+Methods:
+
+- like a function but contains a receiver, which specifies what type the method belongs to
+- receiver can be any type, but in most cases it is a struct or pointer to a struct
 
 ```go
 package main
@@ -687,59 +619,90 @@ func (p *Pokemon) Train() {
 
 <!-- end_slide -->
 
-Maps and the Comma OK Idiom
+Interfaces: What's Your Type?
 ---
 
-A `map` is Go’s built-in way to store key-value pairs. Perfect for Pokémon lookup tables!
+In the Pokémon world, each species has abilities. In Go, **interfaces** define what a type *can do* — not what it *is*.
+
+Think of an interface like this:
+```go +line_numbers
+// If it can tackle like a Pokemon, it IS a pokemon!
+type Pokemon interface {
+    Growl()
+    Attack(move string)
+}
+```
+
+> 🧠 Interfaces describe capabilities — not inheritance!
+> 🟡 No `implements` keyword needed: implementation is **implicit** in Go.
+
+<!-- end_slide -->
+
+Implementing Pokémons
+---
+
+If your type has all the required methods, it **automatically** satisfies the interface. Like how any creature that uses "Tackle" and "Growl" is a Pokémon in your team.
 
 ```go +line_numbers
 package main
 
-func main() {
-    pokedex := make(map[string]string)
-    pokedex["025"] = "Pikachu"
-    pokedex["004"] = "Charmander"
+import "fmt"
+
+type Pikachu struct{}
+
+func (p Pikachu) Growl() {
+    fmt.Println("Pika Pika!")
+}
+
+func (p Pikachu) Attack(move string) {
+    fmt.Printf("Pikachu used %s!\n", move)
 }
 ```
 
-> 🔍 `map[keyType]valueType` — useful for building fast-access Pokédex indexes.
+Here, `Pikachu` satisfies the `Pokemon` interface because it implements all the required methods — no need to declare anything.
 
 <!-- end_slide -->
 
-Maps and the Comma OK Idiom 2
+Interfaces in Battle
 ---
 
-Check if a key exists in a map using the `value, ok := map[key]` idiom:
+We can use an interface to build a **Pokédex** of battle-ready creatures:
 
-```go +line_numbers +exec
+```go +line_numbers +exec {20-28}
 package main
 
 import "fmt"
 
-func main() {
-    pokedex := map[string]string{
-        "025": "Pikachu",
-        "004": "Charmander",
-    }
+type Pokemon interface {
+    Growl()
+    Attack(move string)
+}
 
-    code := "007"
-    name, ok := pokedex[code]
-    if ok {
-        fmt.Printf("%s is in the Pokédex!\n", name)
-    } else {
-        fmt.Printf("No entry found for code %s.\n", code)
-    }
+type Pikachu struct{}
+
+func (p Pikachu) Growl() {
+    fmt.Println("Pika Pika!")
+}
+
+func (p Pikachu) Attack(move string) {
+    fmt.Printf("Pikachu used %s!\n", move)
+}
+
+func Battle(p Pokemon) {
+    p.Growl()
+    p.Attack("Thunderbolt")
+}
+
+func main() {
+    pikachu := Pikachu{}
+    Battle(pikachu)
 }
 ```
 
-Output:
-```
-No entry found for code 007.
-```
-
-> ✅ `ok` tells you whether the Pokémon is registered or still hiding in tall grass.
+> 🎮 Pass your Pokémon around as interface values to make your code flexible and extensible.
 
 <!-- end_slide -->
+
 
 Task 2: Display Pokémon in Style
 ===
@@ -764,35 +727,100 @@ We’ll regroup in **20 minutes** to review your stylish Pokédex entries!
 Import Statements
 ---
 
-In Go, you import packages to use their exported features — think of them as Pokémon skills you borrow from other trainers.
+- As stated previously, everything in Go belongs to a package, declared by the
+  keyword `package`
+- Packages are imported using the `import` statement at the beginning of a file
+- Imports apply to the entire package, all exported identifiers will become
+  available
+- Package management is awesome! Look at the following example:
 
+<!-- column_layout: [2, 1] -->
+<!-- column: 0 -->
 ```go
 package main
 
+// Let's import multiple packages at once
 import (
-    "fmt"               // Output magic
-    "math"              // Math skills
-    http "net/http"     // Alias import
-    "github.com/pokedex/ui" // External package
+    "fmt"                                   // Standard library
+    "math"                                  // Standard library
+    http "net/http"                         // Create an alias called http
+    "github.com/charmbracelet/bubbles/list" // External package we will need
 )
 ```
-
-> 🧠 Group your imports and alias long ones for readability.
+<!-- column: 1 -->
+Compare that to Java
+```java
+import java.util.*;
+import java.util.ArrayList;
+```
 
 <!-- end_slide -->
 
-Go Tools: Your Trainer Kit
+
+Maps
 ---
 
-Go comes with powerful built-in tools to help you on your dev journey. Here are a few essentials:
+A `map` is Go’s built-in way to store key-value pairs. Perfect for Pokémon lookup tables!
 
-- `go mod init` – Start a new Go module (project)
-- `go get` – Catch a dependency (like a Poké Ball!)
-- `go install` – Install binaries
-- `go fmt` – Format your code (style points!)
-- `go test` – Run your unit tests
+```go +line_numbers
+package main
 
-> 🧰 These tools help you build robust, well-organized Go code.
+func main() {
+    pokedex := make(map[string]string)
+    pokedex["025"] = "Pikachu"
+    pokedex["004"] = "Charmander"
+}
+```
+
+> 🔍 `map[keyType]valueType` — useful for building fast-access Pokédex indexes.
+
+<!-- end_slide -->
+
+Maps 2
+---
+
+You can also directly instantiate a key-value pair!
+
+```go +line_numbers
+package main
+
+func main() {
+    pokedex := map[string]string{
+        "025": "Pikachu",
+        "004": "Charmander",
+    }
+}
+```
+
+<!-- end_slide -->
+
+Maps and the Comma OK Idiom
+---
+
+Check if a key exists in a map using the `value, ok := map[key]` idiom:
+
+```go +line_numbers +exec {11-18}
+package main
+
+import "fmt"
+
+func main() {
+    pokedex := map[string]string{
+        "025": "Pikachu",
+        "004": "Charmander",
+    }
+
+    code := "007"
+    name, ok := pokedex[code]
+    if ok {
+        fmt.Printf("%s is in the Pokédex!\n", name)
+    } else {
+        fmt.Printf("No entry found for code %s.\n", code)
+    }
+}
+```
+
+> ✅ `ok` tells you whether the Pokémon is registered or still hiding in tall grass.
 
 <!-- end_slide -->
 
@@ -801,7 +829,7 @@ Type Assertions: Know Your Pokémon
 
 Sometimes, we catch a value of unknown type (`interface{}`), but want to know what it really is — like scanning a Pokémon in the wild!
 
-```go +line_numbers
+```go +line_numbers +exec
 package main
 
 import "fmt"
@@ -822,13 +850,23 @@ func main() {
 }
 ```
 
-Output:
-```
-Eevee
-That wasn’t a numeric Pokémon!
-```
-
 > 🔍 Type assertions let you safely reveal what’s hiding in your Pokéball (i.e. interface).
+> 🔍 Remember! Go can infer types when we define variables using the := notation. 
+
+<!-- end_slide -->
+
+Go Tools: Your Trainer Kit
+---
+
+Go comes with powerful built-in tools to help you on your dev journey. Here are a few essentials:
+
+- `go mod init` – Start a new Go module (project)
+- `go get` – Catch a dependency (like a Poké Ball!)
+- `go install` – Install binaries
+- `go fmt` – Format your code (style points!)
+- `go test` – Run your unit tests
+
+> 🧰 These tools help you build robust, well-organized Go code.
 
 <!-- end_slide -->
 
@@ -883,7 +921,7 @@ func main() {
 Channels and Goroutines 2
 ---
 
-```go +line_numbers
+```go +line_numbers +exec
 package main
 
 import "fmt"
@@ -897,20 +935,15 @@ func sendMoves(moves chan string) {
 func main() {
     moves := make(chan string)
 
-    go sendMoves(moves) // Launch in background
+    // Starts in a new thread
+    go sendMoves(moves)
 
+    // Wait for messages on the channel until closed
     for move := range moves {
         fmt.Println("Pikachu used:", move)
     }
 }
 ```
-
-Output:
-```
-Pikachu used: Thunderbolt
-Pikachu used: Quick Attack
-```
-
 > 🔁 Use `range` to receive until the channel is closed — like watching Pikachu’s turn-based battle!
 
 <!-- end_slide -->
@@ -931,7 +964,7 @@ But maybe you're still thirsty for adventure?
 <!-- end_slide -->
 
 Useful Resources
-===
+==
 
 📘 Where to continue your journey:
 
@@ -986,3 +1019,38 @@ quu..__
                                    `:.:'
 ```
 > ⚡ Thanks for joining our Go Pokédex workshop!
+
+<!-- end_slide -->
+
+Backup
+===
+
+<!-- end_slide -->
+
+Pointers 
+---
+
+In Go, a pointer is a variable that stores the **memory address** of another variable. When we pass a pointer to a function, we can modify the original value.
+
+```go +line_numbers +exec {5-8|13}
+package main
+
+import "fmt"
+
+func boostLevel(level *int) { // *int means pointer to an int
+    *level = *level + 1       // *level dereferences the pointer to access the value
+}
+
+func main() {
+    lvl := 10
+    fmt.Printf("Before: %d\n", lvl)
+    boostLevel(&lvl)         // Pass the address of lvl
+    fmt.Printf("After: %d\n", lvl)
+}
+```
+
+> 🧠 Use `*` to access and change values via a pointer. Use `&` to get the address of a variable.
+
+> Bonus: If you want a function to modify struct fields directly, you’ll use a **pointer receiver** in a method. We’ll get to that soon!
+
+<!-- end_slide -->
