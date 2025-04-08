@@ -173,7 +173,7 @@ func main() {
 }
 ```
 
-> 📄 Use `:=` inside functions to declare and initialize in one line.
+> 📄 Use the shorthand `:=` inside functions, including `main`, to declare and initialize in one line.
 
 <!-- end_slide -->
 
@@ -189,9 +189,9 @@ func main() {
     {
         x := "can guess"
         x = "this variable?"
-        fmt.Printf("A: %s\n", x)
+        fmt.Printf("A: %s\n", x)   // What is the value of x for A?
     }
-    fmt.Printf("B: %s\n", x)
+    fmt.Printf("B: %s\n", x)       // What is the value of x for B?
 }
 ```
 > 🔄 Each `{}` block introduces a new scope. Variable `x` inside the block is **not** the same as outside.
@@ -325,7 +325,7 @@ func main() {
 }
 ```
 
-> 🧪 This passed a **copy** of `level`. To change the original, we need **pointers** (see backup).
+> 🧪 This passed a **copy** of `level`. To change the original, we need **pointers** (see backup slide for more information).
 
 <!-- end_slide -->
 
@@ -460,7 +460,7 @@ Look around the project and check out the file `pokeapi/api.go`.
 
 You will find instructions in the code.
 
-We will continue in about _20 minutes_. 
+We’ll regroup in **20 minutes**.  
 The next slide contains some details about for loops and slices, which you will need to solve task 1b.
 
 <!-- end_slide -->
@@ -505,7 +505,7 @@ func main() {
 
     pokeballs := 3
     for pokeballs > 0 {
-        pokedex = append(pokedex, fmt.Sprintf("Caught #%d", 4 - pokeballs))
+        pokedex = append(pokedex, fmt.Sprintf("Caught #%d", pokeballs))
         pokeballs--
     }
     fmt.Printf("Our current Pokedex: %v\n", pokedex)
@@ -575,9 +575,11 @@ Let’s explore how exporting works:
 ```go
 // Only exported if the name starts with a capital letter
 var PokeballCount = 42
+
+// Can this be used outside the current package?
 var rareCandy = 3
 
-const MaxLevel = 100
+const MaxLevel = 100    // Exported or not?
 ```
 
 > 🧳 Capitalized = Public (exported). Lowercase = Private (unexported).
@@ -626,7 +628,7 @@ In the Pokémon world, each species has abilities. In Go, **interfaces** define 
 
 Think of an interface like this:
 ```go +line_numbers
-// If it can tackle like a Pokemon, it IS a pokemon!
+// If it can attack like a Pokemon, it IS a pokemon!
 type Pokemon interface {
     Growl()
     Attack(move string)
@@ -634,6 +636,7 @@ type Pokemon interface {
 ```
 
 > 🧠 Interfaces describe capabilities — not inheritance!
+> 🧠 Go follows the approach of composition over inheritance.
 > 🟡 No `implements` keyword needed: implementation is **implicit** in Go.
 
 <!-- end_slide -->
@@ -641,7 +644,7 @@ type Pokemon interface {
 Implementing Pokémons
 ---
 
-If your type has all the required methods, it **automatically** satisfies the interface. Like how any creature that uses "Tackle" and "Growl" is a Pokémon in your team.
+If your type has all the required methods, it **automatically** satisfies the interface. Like how any creature that uses "Attack" and "Growl" is a Pokémon in your team.
 
 ```go +line_numbers
 package main
