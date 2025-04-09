@@ -6,7 +6,7 @@ theme:
   name: dark
 ---
 
-Get Your PokeBalls Dirty
+Get Your PokeBalls Ready
 ===
 
 Welcome to your mission: **help Prof. Oak build the ultimate digital Pokédex!**
