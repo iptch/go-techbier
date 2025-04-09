@@ -272,31 +272,6 @@ func main() {
 
 <!-- end_slide -->
 
-Functions
----
-
-Let’s now look at how Go uses **functions**. A function in Go is a standalone unit of logic that can take input arguments and return values.
-
-```go +line_numbers +exec
-package main
-
-import "fmt"
-
-func increaseLevel(level int) int {
-    return level + 1
-}
-
-func main() {
-    original := 5
-    newLevel := increaseLevel(original)
-    fmt.Printf("Before: %d, After: %d", original, newLevel)
-}
-```
-
-> 🧪 This passed a **copy** of `level`. To change the original, we need **pointers** (see backup slide for more information).
-
-<!-- end_slide -->
-
 Error Handling: Caught an Error!
 ---
 
@@ -410,29 +385,6 @@ func main() {
 
 <!-- end_slide -->
 
-Task 1
-===
-
-🔍 Your task is to help Professor Oak fill his Pokédex with Pokémon retrieved from the PokéAPI.
-
-Your mission:
-
-- Implement a function that fetches data from the PokéAPI
-- Parse the JSON into Go structs
-- Store Pokémon entries in a slice
-- Print out the names to verify it works
-
-Open our git repository and check out the branch `tasks/1`.
-
-Look around the project and check out the file `pokeapi/api.go`.
-
-You will find instructions in the code.
-
-We’ll regroup in **20 minutes**.  
-The next slide contains some details about for loops and slices, which you will need to solve task 1b.
-
-<!-- end_slide -->
-
 For Loops and Slices 1
 ---
 
@@ -529,6 +481,29 @@ func main() {
 
 <!-- end_slide -->
 
+Task 1
+===
+
+🔍 Your task is to help Professor Oak fill his Pokédex with Pokémon retrieved from the PokéAPI.
+
+Your mission:
+
+- Implement a function that fetches data from the PokéAPI
+- Parse the JSON into Go structs
+- Store Pokémon entries in a slice
+- Print out the names to verify it works
+
+Open our git repository and check out the branch `tasks/1`.
+
+Look around the project and check out the file `pokeapi/api.go`.
+
+You will find instructions in the code.
+
+We’ll regroup in **20 minutes**.  
+The next slide contains some details about for loops and slices, which you will need to solve task 1b.
+
+<!-- end_slide -->
+
 Packages, Exports, and Constants
 ---
 
@@ -554,6 +529,30 @@ const MaxLevel = 100    // Exported or not?
 
 <!-- end_slide -->
 
+Functions
+---
+
+Let’s now look at how Go uses **functions**. A function in Go is a standalone unit of logic that can take input arguments and return values.
+
+```go +line_numbers +exec
+package main
+
+import "fmt"
+
+func increaseLevel(level int) int {
+    return level + 1
+}
+
+func main() {
+    original := 5
+    newLevel := increaseLevel(original)
+    fmt.Printf("Before: %d, After: %d", original, newLevel)
+}
+```
+
+> 🧪 This passed a **copy** of `level`. To change the original, we need **pointers** (see backup slide for more information).
+
+<!-- end_slide -->
 Methods and Receivers
 ---
 
