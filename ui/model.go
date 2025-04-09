@@ -22,7 +22,7 @@ func InitialModel(pokemon []pokeapi.PokemonRef) model {
 
 	items := make([]list.Item, 0, len(pokemon))
 	for _, pokemon := range pokemon {
-		items = append(items, PokemonItem(pokemon))
+		items = append(items, PokemonItem{ref: pokemon})
 	}
 
 	l := list.New(items, delegate, 0, 0)
@@ -80,7 +80,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// download has started
 			cmds = append(cmds, m.list.StartSpinner())
 		}
-		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), PokemonItem(msg.Pokemon)))
+		cmds = append(cmds, m.list.InsertItem(len(m.list.Items()), PokemonItem{ref: msg.Pokemon}))
 		return m, tea.Batch(cmds...)
 	case DownloadCompleted:
 		m.list.StopSpinner()
