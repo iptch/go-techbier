@@ -110,30 +110,6 @@ package main
 import "fmt"
 
 func main() {
-    var x int
-    var myBoolean bool = true
-    var (
-        unsignedInteger uint8
-        someFloat       float64
-        myFirstString   string
-    )
-    fmt.Printf("%d, %v, %d, %f, %q", x, myBoolean, unsignedInteger, someFloat, myFirstString)
-}
-```
-
-
-> 💡 Declaration blocks are a clean way to group related variables.
-
-<!-- end_slide -->
-
-Declaration and Definition Syntax Basics 4
----
-```go +line_numbers +exec
-package main
-
-import "fmt"
-
-func main() {
     var x int = 5
     y := 7.7
     fmt.Printf("%d\n%f\n", x, y)
