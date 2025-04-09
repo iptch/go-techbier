@@ -166,109 +166,28 @@ func main() {
 
 <!-- end_slide -->
 
-Structs and Visibility 1
+Functions
 ---
-```go +line_numbers
-package main
 
-// Define a new type for our Pokédex entries
-// Structs group related data together
-// Fields starting with a lowercase letter are private
+Let’s now look at how Go uses **functions**. A function in Go is a standalone unit of logic that can take input arguments and return values.
 
-type Pokemon struct {
-    Name     string
-    Type     string
-    Level    int
-    pokedexID string // unexported field
-}
-
-func main() {}
-```
-
-> 🧬 Think of a `struct` as a blueprint for a Pokémon entry.
-
-<!-- end_slide -->
-
-Structs and Visibility 2
----
 ```go +line_numbers +exec
 package main
 
 import "fmt"
 
-type Pokemon struct {
-    Name     string
-    Type     string
-    Level    int
-    pokedexID string
+func increaseLevel(level int) int {
+    return level + 1
 }
 
 func main() {
-    pikachu := Pokemon{"Pikachu", "Electric", 25, "#025"}
-    fmt.Println(pikachu)
+    original := 5
+    newLevel := increaseLevel(original)
+    fmt.Printf("Before: %d, After: %d", original, newLevel)
 }
 ```
 
-> 🐭 We just created our first Pokémon entry! Struct values can be printed directly.
-
-<!-- end_slide -->
-
-Structs and Visibility 3
----
-```go +line_numbers +exec {15-22}
-package main
-
-import "fmt"
-
-type Pokemon struct {
-    Name     string
-    Type     string
-    Level    int
-    pokedexID string
-}
-
-func main() {
-    pikachu := Pokemon{"Pikachu", "Electric", 25, "#025"}
-    fmt.Println(pikachu)
-    bulbasaur := Pokemon{
-        Name: "Bulbasaur",
-        Type: "Grass",
-        Level: 12,
-        pokedexID: "#001",
-    }
-    fmt.Println(bulbasaur)
-}
-```
-> 🧪 Named field initialization makes your code more readable and flexible.
-
-<!-- end_slide -->
-
-Structs and Visibility 4
----
-```go +line_numbers +exec
-package main
-
-import "fmt"
-
-type Pokemon struct {
-    Name     string
-    Type     string
-    Level    int
-    pokedexID string
-}
-
-func main() {
-    var charmander Pokemon
-    charmander.Name = "Charmander"
-    charmander.Type = "Fire"
-    charmander.Level = 18
-    charmander.pokedexID = "#004"
-
-    fmt.Println(charmander)
-}
-```
-
-> 🧯 You can also set struct fields one by one after declaration.
+> 🧪 This passed a **copy** of `level`. To change the original, we need **pointers** (see backup slide for more information).
 
 <!-- end_slide -->
 
@@ -515,30 +434,112 @@ const MaxLevel = 100    // Exported or not?
 
 <!-- end_slide -->
 
-Functions
+Structs and Visibility 1
 ---
+```go +line_numbers
+package main
 
-Let’s now look at how Go uses **functions**. A function in Go is a standalone unit of logic that can take input arguments and return values.
+// Define a new type for our Pokédex entries
+// Structs group related data together
+// Fields starting with a lowercase letter are private
 
+type Pokemon struct {
+    Name     string
+    Type     string
+    Level    int
+    pokedexID string // unexported field
+}
+
+func main() {}
+```
+
+> 🧬 Think of a `struct` as a blueprint for a Pokémon entry.
+
+<!-- end_slide -->
+
+Structs and Visibility 2
+---
 ```go +line_numbers +exec
 package main
 
 import "fmt"
 
-func increaseLevel(level int) int {
-    return level + 1
+type Pokemon struct {
+    Name     string
+    Type     string
+    Level    int
+    pokedexID string
 }
 
 func main() {
-    original := 5
-    newLevel := increaseLevel(original)
-    fmt.Printf("Before: %d, After: %d", original, newLevel)
+    pikachu := Pokemon{"Pikachu", "Electric", 25, "#025"}
+    fmt.Println(pikachu)
 }
 ```
 
-> 🧪 This passed a **copy** of `level`. To change the original, we need **pointers** (see backup slide for more information).
+> 🐭 We just created our first Pokémon entry! Struct values can be printed directly.
 
 <!-- end_slide -->
+
+Structs and Visibility 3
+---
+```go +line_numbers +exec {15-22}
+package main
+
+import "fmt"
+
+type Pokemon struct {
+    Name     string
+    Type     string
+    Level    int
+    pokedexID string
+}
+
+func main() {
+    pikachu := Pokemon{"Pikachu", "Electric", 25, "#025"}
+    fmt.Println(pikachu)
+    bulbasaur := Pokemon{
+        Name: "Bulbasaur",
+        Type: "Grass",
+        Level: 12,
+        pokedexID: "#001",
+    }
+    fmt.Println(bulbasaur)
+}
+```
+> 🧪 Named field initialization makes your code more readable and flexible.
+
+<!-- end_slide -->
+
+Structs and Visibility 4
+---
+```go +line_numbers +exec
+package main
+
+import "fmt"
+
+type Pokemon struct {
+    Name     string
+    Type     string
+    Level    int
+    pokedexID string
+}
+
+func main() {
+    var charmander Pokemon
+    charmander.Name = "Charmander"
+    charmander.Type = "Fire"
+    charmander.Level = 18
+    charmander.pokedexID = "#004"
+
+    fmt.Println(charmander)
+}
+```
+
+> 🧯 You can also set struct fields one by one after declaration.
+
+<!-- end_slide -->
+
 Methods and Receivers
 ---
 
