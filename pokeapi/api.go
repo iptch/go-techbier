@@ -30,16 +30,15 @@
 // Specifically:
 //
 // 1. In `GetSpriteUrl()`:
-//    - Traverse the `Sprites` map to find the URL under:
-//      sprites → other → official-artwork → front_default
-//    - Use type assertions to navigate safely through each layer
+//    - Use type assertions to return the sprite URL
 //    - If anything is missing or of the wrong type, return an error
 //
 // 2. In `GetAsciiSprite(width int)`:
-//    - Use the `ascii-image-converter` package (github.com/TheZoraiz/ascii-image-converter/aic_package)
-//    - Fetch the sprite URL using your `GetSpriteUrl()` function
-//    - Use the `DefaultFlags()` and `Convert()` methods from the package
+//    - Use the `image2ascii` package (github.com/zkck/image2ascii)
 //    - Generate and return colored ASCII art for display in your Pokédex
+//
+// 3. Run the tests with `go test ./...` and then the app with `go run .`. Press
+//    SPACE on a Pokemon to see your ASCII art!
 //
 // --------------------------------------------------------------------
 
@@ -49,6 +48,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"image"
+	_ "image/jpeg"
+	_ "image/png"
+
+	_ "golang.org/x/image/webp"
 )
 
 type PokemonTypeRef struct {
@@ -143,44 +148,25 @@ func (p PokemonRef) Get() (*Pokemon, error) {
 func (p *Pokemon) GetSpriteUrl() (string, error) {
 	keys := []string{"other", "official-artwork", "front_default"}
 
-	spritesMap := p.Sprites
+    // Note how `v` is of type `any`: an interface with no methods. All structs satisfy this interface.
+	var v any
+    v = p.Sprites
 
-	var spritesUrl string
-	// ### Task 3 ###
-	// You will need to use the index returned by `range`, so replace the placeholder
-	for _, key := range keys {
+    for _, key := range keys {
+        mapV, ok := v.(map[string]interface{})
+		if !ok {
+            return "", fmt.Errorf("could not go deeper in JSON: not a map")
+		}
 
-		// ### Task 3 ###
-		// You will need to use the value from spritesMap, so replace the placeholder
-		_, ok := spritesMap[key]
+
+		v, ok = mapV[key]
 		if !ok {
 			return "", fmt.Errorf("key not found: %s", key)
 		}
-
-	// --- Task 3 -------------------------------------------------------------
-	// Your mission is to extract the front sprite URL from the nested sprite data.
-	//
-	// The desired path in the JSON response looks like this:
-	//     sprites → other → official-artwork → front_default
-	//
-	// To achieve this:
-	//   1. Iterate over the `keys` slice above
-	//   2. For each key:
-	//      a. Check if the current `spritesMap` contains that key
-	//      b. If not, return an error (the data is incomplete)
-	//      c. If it exists:
-	//         - If we're at an intermediate key, assert it's a `map[string]interface{}`
-	//           and continue traversal deeper (update spritesMap)
-	//         - If it's the last key (`front_default`), assert it's a `string` and assign
-	//           it to `spritesUrl`
-	//         - If anything fails along the way (type mismatch, missing key), return an error
-	//
-	// Pro Tip: Look at actual JSON responses on https://pokeapi.co to get a feel for the structure
-	// -------------------------------------------------------------------------
-
 	}
 
-	return spritesUrl, nil
+    // TODO: Assert `v` is now a string creating a `spriteUrl` variable, and return it! Return an error if not a string.
+	return "", fmt.Errorf("not implemented")
 }
 
 func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
@@ -189,22 +175,29 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 		return "", err
 	}
 
+    
+	response, err := http.Get(spriteUrl)
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
+
+	img, _, err := image.Decode(response.Body)
+	if err != nil {
+		return "", err
+	}
+
 	// --- Task 3 -------------------------------------------------------------
 	// We need to convert the Pokemon sprites into ASCII art. We will use the
-	// package github.com/TheZoraiz/ascii-image-converter/aic_package.
+	// package github.com/zkck/image2ascii. Use `go get <url>` to import this package,
+    // and add the URL at the top of the file to import it here.
 	//
-	// Add the necessary import statements at the top of the file and use the
-	// imported package to create an ASCII sprite for our Pokédex.
+	// The package has a `DefaultConverter`, which gives a struct to convert the image `img`
+    // to ASCII art. Use the `Convert` method for this. Hint: the `height` in the `Convert` method
+    // can be set to 0 to maintain the image ratio, and `uint(i)` can be used to convert an int
+    // to a uint.
 
-	// Uncomment these lines once you are ready
-	// flags := aic_package.DefaultFlags()
-	// flags.Width = width
-	// flags.Colored = true
-
-	// Finally, wou will need a second function from the imported package, called Convert().
-	// The Convert function takes two parameters: a sprite URL and corresponding flags.
-	// Make sure you adjust the return statement correctly.
-
-	return spriteUrl, fmt.Errorf("not implemented yet")
+    // TODO: Convert the image to ASCII art!
+	return "", fmt.Errorf("not implemented")
 
 }
