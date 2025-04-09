@@ -148,16 +148,15 @@ func (p PokemonRef) Get() (*Pokemon, error) {
 func (p *Pokemon) GetSpriteUrl() (string, error) {
 	keys := []string{"other", "official-artwork", "front_default"}
 
-    // Note how `v` is of type `any`: an interface with no methods. All structs satisfy this interface.
+	// Note how `v` is of type `any`: an interface with no methods. All structs satisfy this interface.
 	var v any
-    v = p.Sprites
+	v = p.Sprites
 
-    for _, key := range keys {
-        mapV, ok := v.(map[string]interface{})
+	for _, key := range keys {
+		mapV, ok := v.(map[string]interface{})
 		if !ok {
-            return "", fmt.Errorf("could not go deeper in JSON: not a map")
+			return "", fmt.Errorf("could not go deeper in JSON: not a map")
 		}
-
 
 		v, ok = mapV[key]
 		if !ok {
@@ -165,7 +164,7 @@ func (p *Pokemon) GetSpriteUrl() (string, error) {
 		}
 	}
 
-    // TODO: Assert `v` is now a string creating a `spriteUrl` variable, and return it! Return an error if not a string.
+	// TODO: Assert `v` is now a string creating a `spriteUrl` variable, and return it! Return an error if not a string.
 	return "", fmt.Errorf("not implemented")
 }
 
@@ -175,7 +174,6 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 		return "", err
 	}
 
-    
 	response, err := http.Get(spriteUrl)
 	if err != nil {
 		return "", err
@@ -190,14 +188,14 @@ func (p *Pokemon) GetAsciiSprite(width int) (string, error) {
 	// --- Task 3 -------------------------------------------------------------
 	// We need to convert the Pokemon sprites into ASCII art. We will use the
 	// package github.com/zkck/image2ascii. Use `go get <url>` to import this package,
-    // and add the URL at the top of the file to import it here.
+	// and add the URL at the top of the file to import it here.
 	//
 	// The package has a `DefaultConverter`, which gives a struct to convert the image `img`
-    // to ASCII art. Use the `Convert` method for this. Hint: the `height` in the `Convert` method
-    // can be set to 0 to maintain the image ratio, and `uint(i)` can be used to convert an int
-    // to a uint.
+	// to ASCII art. Use the `Convert` method for this. Hint: the `height` in the `Convert` method
+	// can be set to 0 to maintain the image ratio, and `uint(i)` can be used to convert an int
+	// to a uint.
 
-    // TODO: Convert the image to ASCII art!
+	// TODO: Convert the image to ASCII art!
 	return "", fmt.Errorf("not implemented")
 
 }
