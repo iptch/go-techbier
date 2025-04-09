@@ -6,40 +6,8 @@ theme:
   name: dark
 ---
 
-Agenda
-===
-- Go Basics
-- Standard Types and Syntax
-- Structs
-- Functions
-- Error Handling
-- Dealing with JSON
-
-<!-- newline -->
-- ***You are up! Task 1***
-<!-- newline -->
-
-- Loops and Slices
-- Packages, Exports, Constants
-- Methods
-- Interfaces
-
-<!-- newline -->
-- ***You are up! Task 2***
-<!-- newline -->
-
-- Imports
-- Maps and Comma OK Idiom
-- Type Assertion
-- Go Management Tools
-
-<!-- newline -->
-- ***You are up! Task 3***
-
-<!-- end_slide -->
-
 Get Your PokeBalls Dirty
----
+===
 
 Welcome to your mission: **help Prof. Oak build the ultimate digital Pokédex!**
 
@@ -336,7 +304,7 @@ Just like a Pokéball can fail to catch a Pokémon, some operations in Go can fa
 
 Go encourages you to **check errors explicitly** using the `if err != nil` pattern.
 
-```go +line_numbers +exec {9-10|13-15|18|all}
+```go +line_numbers +exec {9|10-12|8-15|18|19-22|all}
 package main
 
 import (
