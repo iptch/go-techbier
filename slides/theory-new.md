@@ -279,30 +279,16 @@ Just like a Pokéball can fail to catch a Pokémon, some operations in Go can fa
 
 Go encourages you to **check errors explicitly** using the `if err != nil` pattern.
 
-```go +line_numbers +exec {9|10-12|8-15|18|19-22|all}
-package main
-
-import (
-    "fmt"
-    "os"
-)
-
-func throwPokeball(filePath string) (int, error) {
-    f, err := os.Create(filePath)
+```go +line_numbers
+func throwPokeball(pokemon string) error {
+    p, err := pokeball.Catch(pokemon)
     if err != nil {
-        return 0, err // Oh no! The Pokéball missed!
+        return err // Oh no! The Pokéball missed!
     }
-    defer f.Close()
-    return fmt.Fprintln(f, "You caught a Pikachu!")
-}
+    defer p.Close() // Defer the execution of this code to **whenever the function exits**
 
-func main() {
-    xp, err := throwPokeball("/tmp/pokemon.txt")
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Trainer error: %s\n", err)
-        os.Exit(1)
-    }
-    fmt.Printf("You gained %d XP!\n", xp)
+    fmt.Printf("You caught a Pokemon!")
+    return nil // Returning a nil error means success
 }
 ```
 
