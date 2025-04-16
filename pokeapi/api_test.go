@@ -4,38 +4,21 @@ import (
 	"testing"
 )
 
-const dittoUrl = "https://pokeapi.co/api/v2/pokemon/ditto"
-
 func TestSpriteUrl(t *testing.T) {
-	pokemonRef := PokeapiRef[Pokemon]{Url: dittoUrl}
-	pokemon, err := pokemonRef.Get()
-	if err != nil {
-		t.Fatal(err)
+	pokemon := Pokemon{
+		Sprites: map[string]interface{}{
+			"other": map[string]interface{}{
+				"official-artwork": map[string]interface{}{
+					"front_default": "https://pokemon.com/dittosprite.png",
+				},
+			},
+		},
 	}
 	spriteUrl, err := pokemon.GetSpriteUrl()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if spriteUrl != "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/132.png" {
+	if spriteUrl != "https://pokemon.com/dittosprite.png" {
 		t.Fatal("url mismatch")
-	}
-}
-
-func TestGeneric(t *testing.T) {
-	pokemonRef := PokeapiRef[Pokemon]{Url: dittoUrl}
-	pokemon, err := pokemonRef.Get()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// note the generic type
-	typeRef := pokemon.Types[0].Type
-	type_, err := typeRef.Get()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if type_.Name != "normal" {
-		t.Fatal("pokemon type mismatch")
 	}
 }

@@ -91,27 +91,23 @@ func (p PokeapiRef[T]) Get() (*T, error) {
 func (p *Pokemon) GetSpriteUrl() (string, error) {
 	keys := []string{"other", "official-artwork", "front_default"}
 
-	spritesMap := p.Sprites
+	var current any = p.Sprites
 
-	var spritesUrl string
-	for i, key := range keys {
-		value, ok := spritesMap[key]
+	for _, key := range keys {
+		currentMap, ok := current.(map[string]any)
+		if !ok {
+			return "", fmt.Errorf("expected map")
+		}
+		next, ok := currentMap[key]
 		if !ok {
 			return "", fmt.Errorf("key not found: %s", key)
 		}
-		if i != len(keys)-1 {
-			spritesMap, ok = value.(map[string]any)
-			if !ok {
-				return "", fmt.Errorf("expected map")
-			}
-		} else {
-			spritesUrl, ok = value.(string)
-			if !ok {
-				return "", fmt.Errorf("expected string")
-			}
-		}
+		current = next
 	}
-
+	spritesUrl, ok := current.(string)
+	if !ok {
+		return "", fmt.Errorf("expected string")
+	}
 	return spritesUrl, nil
 }
 
