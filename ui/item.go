@@ -2,7 +2,7 @@ package ui
 
 import (
 	"github.com/charmbracelet/bubbles/list"
-	"github.com/iptch/go-techbier-2024/pokeapi"
+	"github.com/iptch/go-techbier/pokeapi"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )

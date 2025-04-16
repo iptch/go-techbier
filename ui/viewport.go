@@ -6,7 +6,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/iptch/go-techbier-2024/pokeapi"
+	"github.com/iptch/go-techbier/pokeapi"
 )
 
 func textStyle() lipgloss.Style {

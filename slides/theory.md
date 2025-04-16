@@ -30,7 +30,7 @@ export PATH=$PATH:/usr/local/go/bin
 go version
 
 # Get the code skeleton
-git clone https://github.com/iptch/go-techbier-2024.git
+git clone https://github.com/iptch/go-techbier.git
 ```
 
 <!-- end_slide -->

@@ -5,8 +5,8 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/iptch/go-techbier-2024/pokeapi"
-	"github.com/iptch/go-techbier-2024/ui"
+	"github.com/iptch/go-techbier/pokeapi"
+	"github.com/iptch/go-techbier/ui"
 )
 
 func main() {
